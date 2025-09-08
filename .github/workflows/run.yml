@@ -1,0 +1,33 @@
+name: Run ielove CSV Job
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # UTC 0:00 = JST 9:00 に毎日実行
+  workflow_dispatch:      # 手動実行も可能にする
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Setup Google credentials
+        run: echo "${{ secrets.GOOGLE_CREDENTIALS_B64 }}" | base64 -d > service_account.json
+
+      - name: Run script
+        env:
+          LOGIN_USER: ${{ secrets.LOGIN_USER }}
+          LOGIN_PASS: ${{ secrets.LOGIN_PASS }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+        run: python main.py
