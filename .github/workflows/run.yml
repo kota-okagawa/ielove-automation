@@ -31,3 +31,22 @@ jobs:
           LOGIN_PASS: ${{ secrets.LOGIN_PASS }}
           SHEET_ID: ${{ secrets.SHEET_ID }}
         run: python main.py
+
+      - name: Upload debug screenshot (if exists)
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshot
+          path: |
+            login_error.png
+            login_not_found.png
+          if-no-files-found: ignore
+
+      - name: Upload debug html (if exists)
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-html
+          path: |
+            login_error.html
+            login_not_found.html
+          if-no-files-found: ignore
+
